@@ -1,4 +1,6 @@
-﻿using CoursesApi.Core.Interface;
+﻿using Ardalis.Specification.EntityFrameworkCore;
+using Ardalis.Specification;
+using CoursesApi.Core.Interface;
 using CoursesApi.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -65,6 +67,21 @@ namespace CoursesApi.Infrastructure
                 dbSet.Attach(entityToUpdate);
                 context.Entry(entityToUpdate).State = EntityState.Modified;
             });
+        }
+        public async Task<TEntity> GetItemBySpec(ISpecification<TEntity> specification)
+        {
+            return await ApplySpecification(specification).FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<TEntity>> GetListBySpec(ISpecification<TEntity> specification)
+        {
+            return await ApplySpecification(specification).ToListAsync();
+        }
+
+        private IQueryable<TEntity> ApplySpecification(ISpecification<TEntity> specification)
+        {
+            var evaluator = new SpecificationEvaluator();
+            return evaluator.GetQuery(dbSet, specification);
         }
     }
 }

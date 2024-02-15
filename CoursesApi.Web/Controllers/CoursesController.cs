@@ -1,4 +1,5 @@
-﻿using CoursesApi.Core.Interface;
+﻿using CoursesApi.Core.Entities;
+using CoursesApi.Core.Interface;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CoursesApi.Web.Controllers
@@ -19,6 +20,37 @@ namespace CoursesApi.Web.Controllers
         public async Task<IActionResult> GetAll()
         {
             var news = await _coursesService.GetAll();
+            return Ok(news);
+        }
+
+        [HttpPost("Get")]
+        public async Task<IActionResult> GetById(int Id)
+        {
+            var news = await _coursesService.Get(Id);
+            return Ok(news);
+        }
+        [HttpPost("Insert")]
+        public async Task<IActionResult> Insert(Courses model)
+        {
+            await _coursesService.Insert(model);
+            return Ok();
+        }
+        [HttpPatch("Update")]
+        public async Task<IActionResult> Update(Courses model)
+        {
+            await _coursesService.Update(model);
+            return Ok();
+        }
+        [HttpDelete("Delete")]
+        public async Task<IActionResult> Delete(int Id)
+        {
+            await _coursesService.Delete(Id);
+            return Ok();
+        }
+        [HttpPost("GetByCategory")]
+        public async Task<IActionResult> GetByCategory(int id)
+        {
+            var news = await _coursesService.GetByCategory(id);
             return Ok(news);
         }
     }

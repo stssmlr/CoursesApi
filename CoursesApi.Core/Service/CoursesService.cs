@@ -1,5 +1,6 @@
 ﻿
 using CoursesApi.Core.Entities;
+using CoursesApi.Core.Entities.Specifications;
 using CoursesApi.Core.Interface;
 using System;
 using System.Collections.Generic;
@@ -44,6 +45,12 @@ namespace CoursesApi.Core.Service
         {
             await _coursesRepository.Update(news);
             await _coursesRepository.Save();
+        }
+
+        public async Task<List<Courses>> GetByCategory(int id)
+        {
+            var result = await _coursesRepository.GetListBySpec(new CoursesSpecification.ByCategory(id));
+            return (List<Courses>)result;
         }
     }
 }

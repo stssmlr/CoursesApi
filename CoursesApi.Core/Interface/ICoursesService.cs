@@ -15,5 +15,6 @@ namespace CoursesApi.Core.Interface
         Task<Courses> Get(int id);
         Task Update(Courses news);
         Task Delete(int id);
+        Task<List<Courses>> GetByCategory(int id);
     }
 }
