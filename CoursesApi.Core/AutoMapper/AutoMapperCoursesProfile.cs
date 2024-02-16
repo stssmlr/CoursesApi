@@ -15,6 +15,7 @@ namespace CoursesApi.Core.AutoMapper
         public AutoMapperCoursesProfile()
         {
             CreateMap<CoursesDto, Courses>().ReverseMap();
+            CreateMap<InsertCoursesDto, Courses>().ReverseMap();
 
         }
     }

@@ -1,4 +1,6 @@
 ﻿
+using AutoMapper;
+using CoursesApi.Core.DTOs;
 using CoursesApi.Core.Entities;
 using CoursesApi.Core.Entities.Specifications;
 using CoursesApi.Core.Interface;
@@ -13,11 +15,12 @@ namespace CoursesApi.Core.Service
     public class CoursesService : ICoursesService
     {
         private readonly IRepository<Courses> _coursesRepository;
+        private readonly IMapper _mapper;
 
-        public CoursesService(IRepository<Courses> newsRepository)
+        public CoursesService(IRepository<Courses> coursesRepository, IMapper mapper)
         {
-            _coursesRepository = newsRepository;
-
+            _coursesRepository = coursesRepository;
+            _mapper = mapper;
         }
         public async Task Delete(int id)
         {
@@ -25,20 +28,20 @@ namespace CoursesApi.Core.Service
             await _coursesRepository.Save();
         }
 
-        public async Task<Courses> Get(int id)
+        public async Task<CoursesDto> Get(int id)
         {
-            return (Courses)await _coursesRepository.GetByID(id);
+            return _mapper.Map<CoursesDto>(await _coursesRepository.GetByID(id));
         }
 
-        public async Task Insert(Courses model)
+        public async Task Insert(InsertCoursesDto model)
         {
-            await _coursesRepository.Insert(model);
+            await _coursesRepository.Insert(_mapper.Map<Courses>(model));
             await _coursesRepository.Save();
         }
 
-        public async Task<List<Courses>> GetAll()
+        public async Task<List<CoursesDto>> GetAll()
         {
-            return (List<Courses>)await _coursesRepository.GetAll();
+            return _mapper.Map<List<CoursesDto>>(await _coursesRepository.GetAll());
         }
 
         public async Task Update(Courses news)
@@ -47,10 +50,17 @@ namespace CoursesApi.Core.Service
             await _coursesRepository.Save();
         }
 
-        public async Task<List<Courses>> GetByCategory(int id)
+        public async Task<List<CoursesDto>> GetByCategory(int id)
         {
             var result = await _coursesRepository.GetListBySpec(new CoursesSpecification.ByCategory(id));
-            return (List<Courses>)result;
+            return _mapper.Map<List<CoursesDto>>(result);
         }
+        
+        public async Task<List<CoursesDto>> GetByAuthor(int id)
+        {
+            var result = await _coursesRepository.GetListBySpec(new CoursesSpecification.ByAuthor(id));
+            return _mapper.Map<List<CoursesDto>>(result);
+        }
+        
     }
 }

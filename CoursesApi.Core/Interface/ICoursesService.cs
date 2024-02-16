@@ -1,4 +1,5 @@
 ﻿
+using CoursesApi.Core.DTOs;
 using CoursesApi.Core.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,11 +11,13 @@ namespace CoursesApi.Core.Interface
 {
     public interface ICoursesService
     {
-        Task Insert(Courses model);
-        Task<List<Courses>> GetAll();
-        Task<Courses> Get(int id);
+        Task Insert(InsertCoursesDto model);
+        Task<List<CoursesDto>> GetAll();
+        Task<CoursesDto> Get(int id);
         Task Update(Courses news);
         Task Delete(int id);
-        Task<List<Courses>> GetByCategory(int id);
+        Task<List<CoursesDto>> GetByCategory(int id);
+        Task<List<CoursesDto>> GetByAuthor(int id);
+
     }
 }

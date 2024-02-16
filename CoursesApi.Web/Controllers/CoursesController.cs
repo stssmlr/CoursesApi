@@ -1,4 +1,5 @@
-﻿using CoursesApi.Core.Entities;
+﻿using CoursesApi.Core.DTOs;
+using CoursesApi.Core.Entities;
 using CoursesApi.Core.Interface;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,10 +31,20 @@ namespace CoursesApi.Web.Controllers
             return Ok(news);
         }
         [HttpPost("Insert")]
-        public async Task<IActionResult> Insert(Courses model)
+        public async Task<IActionResult> Insert(InsertCoursesDto model)
         {
-            await _coursesService.Insert(model);
-            return Ok();
+            var userExists = await _coursesService.Get(model.Id);
+            if (userExists != null)
+            {
+                return Ok("This Course Already Exists!");
+                
+            }
+            else
+            {
+                await _coursesService.Insert(model);
+                return Ok();
+            }
+            
         }
         [HttpPatch("Update")]
         public async Task<IActionResult> Update(Courses model)
@@ -48,9 +59,15 @@ namespace CoursesApi.Web.Controllers
             return Ok();
         }
         [HttpPost("GetByCategory")]
-        public async Task<IActionResult> GetByCategory(int id)
+        public async Task<IActionResult> GetByCategory(int id) 
         {
             var news = await _coursesService.GetByCategory(id);
+            return Ok(news);
+        }
+        [HttpPost("GetByAuthor")]
+        public async Task<IActionResult> GetByAuthor(int id)
+        {
+            var news = await _coursesService.GetByAuthor(id);
             return Ok(news);
         }
     }

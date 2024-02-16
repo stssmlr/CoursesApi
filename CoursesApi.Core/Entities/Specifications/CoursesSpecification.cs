@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CoursesApi.Core.Entities.Specifications
 {
-    public class CoursesSpecification
+    public class CoursesSpecification 
     {
         public class All : Specification<Courses>
         {
@@ -24,6 +24,15 @@ namespace CoursesApi.Core.Entities.Specifications
             {
                 Query.Include(x => x.Category)
                     .Where(c => c.CategoryId == categoryId);
+            }
+        }
+
+        public class ByAuthor : Specification<Courses>
+        {
+            public ByAuthor(int authorId)
+            {
+                Query.Include(x => x.Author)
+                    .Where(c => c.AuthorId == authorId);
             }
         }
     }

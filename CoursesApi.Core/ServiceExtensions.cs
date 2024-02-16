@@ -13,9 +13,9 @@ namespace CoursesApi.Core
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IAuthorService, AuthorService>();
         }
-        /*public static void AddMapping(this IServiceCollection services)
+        public static void AddMapping(this IServiceCollection services)
         {
             services.AddAutoMapper(typeof(AutoMapperCoursesProfile));
-        }*/
+        }
     }
 }
