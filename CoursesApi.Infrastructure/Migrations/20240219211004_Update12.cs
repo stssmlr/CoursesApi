@@ -7,7 +7,7 @@
 namespace CoursesApi.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class updatingdatabase : Migration
+    public partial class Update12 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,6 +21,7 @@ namespace CoursesApi.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Surname = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Pseudonym = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Age = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -57,16 +58,30 @@ namespace CoursesApi.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Courses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Courses_Author_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "Author",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Courses_Category_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Category",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
                 table: "Author",
-                columns: new[] { "Id", "Age", "Name", "Pseudonym", "Surname" },
+                columns: new[] { "Id", "Age", "Email", "Name", "Pseudonym", "Surname" },
                 values: new object[,]
                 {
-                    { 1, 29, "Bob", "Scott Carol", "Parsons" },
-                    { 2, 27, "Carolina", "Kristen Josh", "Lara" },
-                    { 3, 36, "Edwin", "Tommy Walker", "Webster" }
+                    { 1, 29, "bobmarv@hotmail.vom", "Bob", "Scott Carol", "Parsons" },
+                    { 2, 27, "carolinalara@hotmail.vom", "Carolina", "Kristen Josh", "Lara" },
+                    { 3, 36, "edwinweb@hotmail.vom", "Edwin", "Tommy Walker", "Webster" },
+                    { 4, 56, "matashr@hotmail.vom", "Mata", "Tom Hanks", "Shibster" },
+                    { 5, 26, "edgarcr@hotmail.vom", "Edgar", "Lol Tomphson", "Cringo" }
                 });
 
             migrationBuilder.InsertData(
@@ -95,19 +110,29 @@ namespace CoursesApi.Infrastructure.Migrations
                 table: "Author",
                 column: "Pseudonym",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Courses_AuthorId",
+                table: "Courses",
+                column: "AuthorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Courses_CategoryId",
+                table: "Courses",
+                column: "CategoryId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Courses");
+
+            migrationBuilder.DropTable(
                 name: "Author");
 
             migrationBuilder.DropTable(
                 name: "Category");
-
-            migrationBuilder.DropTable(
-                name: "Courses");
         }
     }
 }

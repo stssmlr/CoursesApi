@@ -38,9 +38,11 @@ namespace CoursesApi.Infrastructure.Initializers
         {
             modelBuilder.Entity<Author>().HasData(new Author[]
                 {
-                    new Author(){Id = 1,Name="Bob",Surname = "Parsons",Pseudonym="Scott Carol", Age = 29},
-                    new Author(){Id = 2,Name="Carolina",Surname = "Lara",Pseudonym="Kristen Josh", Age = 27},
-                    new Author(){Id = 3,Name="Edwin",Surname = "Webster",Pseudonym="Tommy Walker", Age = 36}
+                    new Author(){Id = 1,Name="Bob",Surname = "Parsons", Email = "bobmarv@hotmail.vom",Pseudonym="Scott Carol", Age = 29},
+                    new Author(){Id = 2,Name="Carolina",Surname = "Lara", Email = "carolinalara@hotmail.vom",Pseudonym="Kristen Josh", Age = 27},
+                    new Author(){Id = 3,Name="Edwin",Surname = "Webster", Email = "edwinweb@hotmail.vom",Pseudonym="Tommy Walker", Age = 36},
+                    new Author(){Id = 4,Name="Mata",Surname = "Shibster", Email = "matashr@hotmail.vom",Pseudonym="Tom Hanks", Age = 56} ,
+                    new Author(){Id = 5,Name="Edgar",Surname = "Cringo", Email = "edgarcr@hotmail.vom",Pseudonym="Lol Tomphson", Age = 26},
                 }
              );
         }

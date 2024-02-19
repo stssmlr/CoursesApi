@@ -14,7 +14,7 @@ namespace CoursesApi.Core.Interface
         Task Insert(InsertCoursesDto model);
         Task<List<CoursesDto>> GetAll();
         Task<CoursesDto> Get(int id);
-        Task Update(Courses news);
+        Task Update(InsertCoursesDto news);
         Task Delete(int id);
         Task<List<CoursesDto>> GetByCategory(int id);
         Task<List<CoursesDto>> GetByAuthor(int id);

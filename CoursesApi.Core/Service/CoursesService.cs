@@ -44,9 +44,9 @@ namespace CoursesApi.Core.Service
             return _mapper.Map<List<CoursesDto>>(await _coursesRepository.GetAll());
         }
 
-        public async Task Update(Courses news)
+        public async Task Update(InsertCoursesDto news)
         {
-            await _coursesRepository.Update(news);
+            await _coursesRepository.Update(_mapper.Map<Courses>(news));
             await _coursesRepository.Save();
         }
 

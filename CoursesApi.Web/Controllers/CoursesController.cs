@@ -37,7 +37,6 @@ namespace CoursesApi.Web.Controllers
             if (userExists != null)
             {
                 return Ok("This Course Already Exists!");
-                
             }
             else
             {
@@ -47,7 +46,7 @@ namespace CoursesApi.Web.Controllers
             
         }
         [HttpPatch("Update")]
-        public async Task<IActionResult> Update(Courses model)
+        public async Task<IActionResult> Update(InsertCoursesDto model)
         {
             await _coursesService.Update(model);
             return Ok();

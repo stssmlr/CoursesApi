@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CoursesApi.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240215195315_updating database")]
-    partial class updatingdatabase
+    [Migration("20240219211004_Update12")]
+    partial class Update12
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,6 +34,10 @@ namespace CoursesApi.Infrastructure.Migrations
 
                     b.Property<int>("Age")
                         .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -59,6 +63,7 @@ namespace CoursesApi.Infrastructure.Migrations
                         {
                             Id = 1,
                             Age = 29,
+                            Email = "bobmarv@hotmail.vom",
                             Name = "Bob",
                             Pseudonym = "Scott Carol",
                             Surname = "Parsons"
@@ -67,6 +72,7 @@ namespace CoursesApi.Infrastructure.Migrations
                         {
                             Id = 2,
                             Age = 27,
+                            Email = "carolinalara@hotmail.vom",
                             Name = "Carolina",
                             Pseudonym = "Kristen Josh",
                             Surname = "Lara"
@@ -75,9 +81,28 @@ namespace CoursesApi.Infrastructure.Migrations
                         {
                             Id = 3,
                             Age = 36,
+                            Email = "edwinweb@hotmail.vom",
                             Name = "Edwin",
                             Pseudonym = "Tommy Walker",
                             Surname = "Webster"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Age = 56,
+                            Email = "matashr@hotmail.vom",
+                            Name = "Mata",
+                            Pseudonym = "Tom Hanks",
+                            Surname = "Shibster"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Age = 26,
+                            Email = "edgarcr@hotmail.vom",
+                            Name = "Edgar",
+                            Pseudonym = "Lol Tomphson",
+                            Surname = "Cringo"
                         });
                 });
 
@@ -149,6 +174,10 @@ namespace CoursesApi.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Courses");
 
                     b.HasData(
@@ -188,6 +217,25 @@ namespace CoursesApi.Infrastructure.Migrations
                             FullText = "Learn Chinese Language To A1-C2 Levels Or Improve Your Skills. We are waiting for your come.",
                             Title = "Chinese Courses"
                         });
+                });
+
+            modelBuilder.Entity("CoursesApi.Core.Entities.Courses", b =>
+                {
+                    b.HasOne("CoursesApi.Core.Entities.Author", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CoursesApi.Core.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Category");
                 });
 #pragma warning restore 612, 618
         }
