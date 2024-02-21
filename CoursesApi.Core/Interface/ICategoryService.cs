@@ -9,10 +9,10 @@ namespace CoursesApi.Core.Interface
 {
     public interface ICategoryService
     {
-        Task Insert(Category model);
         Task<List<Category>> GetAll();
         Task<Category> Get(int id);
-        Task Update(Category role);
-        Task Delete(int id);
+        Task<string> Update(Category course);
+        Task<string> Delete(int id);
+        Task<string> Insert(Category model);
     }
 }

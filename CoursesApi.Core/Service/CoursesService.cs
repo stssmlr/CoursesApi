@@ -22,10 +22,20 @@ namespace CoursesApi.Core.Service
             _coursesRepository = coursesRepository;
             _mapper = mapper;
         }
-        public async Task Delete(int id)
+        public async Task<string> Delete(int id)
         {
-            await _coursesRepository.Delete(id);
-            await _coursesRepository.Save();
+            
+            List<Courses> Courses = (List<Courses>)await _coursesRepository.GetAll();
+            foreach (Courses a in Courses)
+            {
+                if (a.Id == id)
+                {
+                    await _coursesRepository.Delete(id);
+                    await _coursesRepository.Save();
+                    return "Delete";
+                }
+            }
+            return "Courses does not exist";
         }
 
         public async Task<CoursesDto> Get(int id)
@@ -33,21 +43,24 @@ namespace CoursesApi.Core.Service
             return _mapper.Map<CoursesDto>(await _coursesRepository.GetByID(id));
         }
 
-        public async Task Insert(InsertCoursesDto model)
-        {
-            await _coursesRepository.Insert(_mapper.Map<Courses>(model));
-            await _coursesRepository.Save();
-        }
-
         public async Task<List<CoursesDto>> GetAll()
         {
             return _mapper.Map<List<CoursesDto>>(await _coursesRepository.GetAll());
         }
 
-        public async Task Update(InsertCoursesDto news)
+        public async Task<string> Update(InsertCoursesDto course)
         {
-            await _coursesRepository.Update(_mapper.Map<Courses>(news));
-            await _coursesRepository.Save();
+            List<InsertCoursesDto> categorys = _mapper.Map<List<InsertCoursesDto>>(await _coursesRepository.GetAll());
+            foreach (InsertCoursesDto a in categorys)
+            {
+                if (a.Id == course.Id)
+                {
+                    await _coursesRepository.Update(_mapper.Map<Courses>(course));
+                    await _coursesRepository.Save();
+                    return "Update";
+                }
+            }
+            return "Such a course does not exist";
         }
 
         public async Task<List<CoursesDto>> GetByCategory(int id)
@@ -61,6 +74,20 @@ namespace CoursesApi.Core.Service
             var result = await _coursesRepository.GetListBySpec(new CoursesSpecification.ByAuthor(id));
             return _mapper.Map<List<CoursesDto>>(result);
         }
-        
+        public async Task<string> Insert(InsertCoursesDto course)
+        {
+            List<InsertCoursesDto> courses = _mapper.Map<List<InsertCoursesDto>>(await _coursesRepository.GetAll());
+            foreach (InsertCoursesDto category in courses)
+            {
+                if (category.Equals(course))
+                {
+                    return "Course Is Already In Database";
+                }
+            }
+            await _coursesRepository.Insert(_mapper.Map<Courses>(course));
+            await _coursesRepository.Save();
+            return "Course successfully added!";
+        }
+
     }
 }

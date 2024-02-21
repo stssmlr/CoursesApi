@@ -11,11 +11,11 @@ namespace CoursesApi.Core.Interface
 {
     public interface ICoursesService
     {
-        Task Insert(InsertCoursesDto model);
+        Task<string> Insert(InsertCoursesDto model);
         Task<List<CoursesDto>> GetAll();
         Task<CoursesDto> Get(int id);
-        Task Update(InsertCoursesDto news);
-        Task Delete(int id);
+        Task<string> Update(InsertCoursesDto course);
+        Task<string> Delete(int id);
         Task<List<CoursesDto>> GetByCategory(int id);
         Task<List<CoursesDto>> GetByAuthor(int id);
 

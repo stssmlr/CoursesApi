@@ -25,26 +25,41 @@ namespace CoursesApi.Web.Controllers
         [HttpPost("Get")]
         public async Task<IActionResult> GetById(int Id)
         {
-            var news = await _authorService.Get(Id);
-            return Ok(news);
+            var author = await _authorService.Get(Id);
+            if (author == null)
+            {
+                return Ok("Author Is not Found");
+            }
+            return Ok(author);
         }
+        [HttpGet("GetByEmail")]
+        public async Task<IActionResult> GetByCategory(string email)
+        {
+            var res = await _authorService.GetByEmail(email);
+            if (res == null)
+            {
+                return Ok("Email Is not Found");
+            }
+            return Ok(res);
+        }
+
         [HttpPost("Insert")]
         public async Task<IActionResult> Insert(Author model)
         {
-            await _authorService.Insert(model);
-            return Ok();
+            var res = await _authorService.Insert(model);
+            return Ok(res);
         }
         [HttpPatch("Update")]
         public async Task<IActionResult> Update(Author model)
         {
-            await _authorService.Update(model);
-            return Ok();
+            var res = await _authorService.Update(model);
+            return Ok(res);
         }
         [HttpDelete("Delete")]
         public async Task<IActionResult> Delete(int Id)
         {
-            await _authorService.Delete(Id);
-            return Ok();
+            var res = await _authorService.Delete(Id);
+            return Ok(res);
         }
     }
 }

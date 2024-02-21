@@ -7,7 +7,7 @@
 namespace CoursesApi.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Update12 : Migration
+    public partial class Updating123 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

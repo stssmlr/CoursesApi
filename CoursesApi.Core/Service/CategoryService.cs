@@ -11,16 +11,34 @@ namespace CoursesApi.Core.Service
     public class CategoryService : ICategoryService
     {
         private readonly IRepository<Category> _categoryRepository;
+        private readonly IRepository<Courses> _coursesRepository;
 
-        public CategoryService(IRepository<Category> categoryRepository)
+        public CategoryService(IRepository<Category> categoryRepository, IRepository<Courses> coursesRepository)
         {
             _categoryRepository = categoryRepository;
-
+            _coursesRepository = coursesRepository;
         }
-        public async Task Delete(int id)
+        public async Task<string> Delete(int id)
         {
-            await _categoryRepository.Delete(id);
-            await _categoryRepository.Save();
+            List<Courses> courses = (List<Courses>)await _coursesRepository.GetAll();
+            foreach (Courses c in courses)
+            {
+                if (c.CategoryId == id)
+                {
+                    return "Delete the course of this category";
+                }
+            }
+            List<Category> Authors = (List<Category>)await _categoryRepository.GetAll();
+            foreach (Category a in Authors)
+            {
+                if (a.Id == id)
+                {
+                    await _categoryRepository.Delete(id);
+                    await _categoryRepository.Save();
+                    return "Delete";
+                }
+            }
+            return "Category does not exist";
         }
 
         public async Task<Category> Get(int id)
@@ -28,10 +46,19 @@ namespace CoursesApi.Core.Service
             return (Category)await _categoryRepository.GetByID(id);
         }
 
-        public async Task Insert(Category model)
+        public async Task<string> Insert(Category model)
         {
+            List<Category> categories = (List<Category>)await _categoryRepository.GetAll();
+            foreach (Category category in categories)
+            {
+                if (category.Equals(model))
+                {
+                    return "Category Is Already In Database";
+                }
+            }
             await _categoryRepository.Insert(model);
             await _categoryRepository.Save();
+            return "Category successfully added!";
         }
 
         public async Task<List<Category>> GetAll()
@@ -39,10 +66,19 @@ namespace CoursesApi.Core.Service
             return (List<Category>)await _categoryRepository.GetAll();
         }
 
-        public async Task Update(Category news)
+        public async Task<string> Update(Category course)
         {
-            await _categoryRepository.Update(news);
-            await _categoryRepository.Save();
+            List<Category> categories = (List<Category>)await _categoryRepository.GetAll();
+            foreach (Category a in categories)
+            {
+                if (a.Id == course.Id)
+                {
+                    await _categoryRepository.Update(course);
+                    await _categoryRepository.Save();
+                    return "Update";
+                }
+            }
+            return "Category does not exist";
         }
     }
 }

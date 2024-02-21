@@ -9,10 +9,11 @@ namespace CoursesApi.Core.Interface
 {
     public interface IAuthorService
     {
-        Task Insert(Author model);
+        Task<string> Insert(Author model);
         Task<List<Author>> GetAll();
         Task<Author> Get(int id);
-        Task Update(Author role);
-        Task Delete(int id);
+        Task<string> Update(Author course);
+        Task<string> Delete(int id);
+        Task<Author> GetByEmail(string email);
     }
 }

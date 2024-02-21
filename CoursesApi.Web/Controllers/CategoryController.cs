@@ -1,6 +1,7 @@
 ﻿using CoursesApi.Core.Entities;
 using CoursesApi.Core.Interface;
 using Microsoft.AspNetCore.Mvc;
+using static CoursesApi.Core.Entities.Specifications.CoursesSpecification;
 
 namespace CoursesApi.Web.Controllers
 {
@@ -25,26 +26,30 @@ namespace CoursesApi.Web.Controllers
         [HttpPost("Get")]
         public async Task<IActionResult> GetById(int Id)
         {
-            var news = await _categoryService.Get(Id);
-            return Ok(news);
+            var category = await _categoryService.Get(Id);
+            if (category == null)
+            {
+                return Ok("Category Is not Found");
+            }
+            return Ok(category);
         }
         [HttpPost("Insert")]
         public async Task<IActionResult> Insert(Category model)
         {
-            await _categoryService.Insert(model);
-            return Ok();
+            var res = await _categoryService.Insert(model);
+            return Ok(res);
         }
         [HttpPatch("Update")]
         public async Task<IActionResult> Update(Category model)
         {
-            await _categoryService.Update(model);
-            return Ok();
+            var res = await _categoryService.Update(model);
+            return Ok(res);
         }
         [HttpDelete("Delete")]
         public async Task<IActionResult> Delete(int Id)
         {
-            await _categoryService.Delete(Id);
-            return Ok();
+            var res = await _categoryService.Delete(Id);
+            return Ok(res);
         }
     }
 }
