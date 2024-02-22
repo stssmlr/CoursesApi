@@ -1,4 +1,5 @@
 ﻿using CoursesApi.Core.Entities;
+using CoursesApi.Core.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +10,11 @@ namespace CoursesApi.Core.Interface
 {
     public interface IAuthorService
     {
-        Task<string> Insert(Author model);
-        Task<List<Author>> GetAll();
-        Task<Author> Get(int id);
-        Task<string> Update(Author course);
-        Task<string> Delete(int id);
-        Task<Author> GetByEmail(string email);
+        Task<ServiceResponse> Insert(Author model);
+        Task<ServiceResponse> GetAll();
+        Task<ServiceResponse> Get(int id);
+        Task<ServiceResponse> Update(Author course);
+        Task<ServiceResponse> Delete(int id);
+        Task<ServiceResponse> GetByEmail(string email);
     }
 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CoursesApi.Core.Service
 {
@@ -18,14 +19,19 @@ namespace CoursesApi.Core.Service
             _categoryRepository = categoryRepository;
             _coursesRepository = coursesRepository;
         }
-        public async Task<string> Delete(int id)
+        public async Task<ServiceResponse> Delete(int id)
         {
             List<Courses> courses = (List<Courses>)await _coursesRepository.GetAll();
             foreach (Courses c in courses)
             {
                 if (c.CategoryId == id)
                 {
-                    return "Delete the course of this category";
+                    return new ServiceResponse
+                    {
+                        Success = false,
+                        Message = "Delete the course of this category",
+                        Payload = null
+                    };
                 }
             }
             List<Category> Authors = (List<Category>)await _categoryRepository.GetAll();
@@ -35,38 +41,94 @@ namespace CoursesApi.Core.Service
                 {
                     await _categoryRepository.Delete(id);
                     await _categoryRepository.Save();
-                    return "Delete";
+                    return new ServiceResponse
+                    {
+                        Success = true,
+                        Message = "Category Was Successfully Deleted",
+                        Payload = null
+                    };
                 }
             }
-            return "Category does not exist";
+            return new ServiceResponse
+            {
+                Success = false,
+                Message = "Category Doesn`t Exist",
+                Payload = null
+            };
         }
 
-        public async Task<Category> Get(int id)
+        public async Task<ServiceResponse> Get(int id)
         {
-            return (Category)await _categoryRepository.GetByID(id);
+            var data = (Category)await _categoryRepository.GetByID(id);
+            if (data != null)
+            {
+                return new ServiceResponse
+                {
+                    Success = true,
+                    Message = "All Categories Successfully Loaded",
+                    Payload = data
+                };
+            }
+            else
+            {
+                return new ServiceResponse
+                {
+                    Success = false,
+                    Message = "Something went wrong",
+                    Payload = null
+                };
+            }
         }
 
-        public async Task<string> Insert(Category model)
+        public async Task<ServiceResponse> Insert(Category model)
         {
             List<Category> categories = (List<Category>)await _categoryRepository.GetAll();
             foreach (Category category in categories)
             {
                 if (category.Equals(model))
                 {
-                    return "Category Is Already In Database";
+                    return new ServiceResponse
+                    {
+                        Success = false,
+                        Message = "Category Is Already In Database",
+                        Payload = null
+                    };
                 }
             }
             await _categoryRepository.Insert(model);
             await _categoryRepository.Save();
-            return "Category successfully added!";
+            return new ServiceResponse
+            {
+                Success = true,
+                Message = "All Categories Successfully Created",
+                Payload = null
+            };
         }
 
-        public async Task<List<Category>> GetAll()
+        public async Task<ServiceResponse> GetAll()
         {
-            return (List<Category>)await _categoryRepository.GetAll();
+            var data =  (List<Category>)await _categoryRepository.GetAll();
+            if (data != null)
+            {
+                return new ServiceResponse
+                {
+                    Success = true,
+                    Message = "All Categories Successfully Loaded",
+                    Payload = data
+                };
+            }
+            else
+            {
+                return new ServiceResponse
+                {
+                    Success = false,
+                    Message = "Something went wrong",
+                    Payload = null
+                };
+            }
         }
 
-        public async Task<string> Update(Category course)
+        public async Task<ServiceResponse> Update(Category course)
         {
             List<Category> categories = (List<Category>)await _categoryRepository.GetAll();
             foreach (Category a in categories)
@@ -75,10 +137,20 @@ namespace CoursesApi.Core.Service
                 {
                     await _categoryRepository.Update(course);
                     await _categoryRepository.Save();
-                    return "Update";
+                    return new ServiceResponse
+                    {
+                        Success = true,
+                        Message = "All Categories Successfully Updated",
+                        Payload = null
+                    };
                 }
             }
-            return "Category does not exist";
+            return new ServiceResponse
+            {
+                Success = false,
+                Message = "Category doesn't exist",
+                Payload = null
+            };
         }
     }
 }

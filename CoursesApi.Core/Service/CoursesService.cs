@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CoursesApi.Core.Service
 {
@@ -22,7 +23,7 @@ namespace CoursesApi.Core.Service
             _coursesRepository = coursesRepository;
             _mapper = mapper;
         }
-        public async Task<string> Delete(int id)
+        public async Task<ServiceResponse> Delete(int id)
         {
             
             List<Courses> Courses = (List<Courses>)await _coursesRepository.GetAll();
@@ -32,61 +33,163 @@ namespace CoursesApi.Core.Service
                 {
                     await _coursesRepository.Delete(id);
                     await _coursesRepository.Save();
-                    return "Delete";
+                    return new ServiceResponse
+                    {
+                        Success = true,
+                        Message = "Course Was Successfully Deleted",
+                        Payload = null
+                    };
                 }
             }
-            return "Courses does not exist";
+            return new ServiceResponse
+            {
+                Success = false,
+                Message = "Something went wrong",
+                Payload = null
+            };
         }
 
-        public async Task<CoursesDto> Get(int id)
+        public async Task<ServiceResponse> Get(int id)
         {
-            return _mapper.Map<CoursesDto>(await _coursesRepository.GetByID(id));
+            var data = _mapper.Map<CoursesDto>(await _coursesRepository.GetByID(id));
+            if (data != null)
+            {
+                return new ServiceResponse
+                {
+                    Success = true,
+                    Message = "Course Was Successfully Loaded",
+                    Payload = data
+                };
+            }
+            else
+            {
+                return new ServiceResponse
+                {
+                    Success = false,
+                    Message = "Something went wrong",
+                    Payload = null
+                };
+            }
         }
 
-        public async Task<List<CoursesDto>> GetAll()
+        public async Task<ServiceResponse> GetAll()
         {
-            return _mapper.Map<List<CoursesDto>>(await _coursesRepository.GetAll());
+            var data = _mapper.Map<List<CoursesDto>>(await _coursesRepository.GetAll());
+            if (data != null)
+            {
+                return new ServiceResponse
+                {
+                    Success = true,
+                    Message = "All Courses Successfully Loaded",
+                    Payload = data
+                };
+            }
+            else
+            {
+                return new ServiceResponse
+                {
+                    Success = false,
+                    Message = "Something went wrong",
+                    Payload = null
+                };
+            } 
         }
 
-        public async Task<string> Update(InsertCoursesDto course)
+        public async Task<ServiceResponse> Update(InsertCoursesDto course)
         {
-            List<InsertCoursesDto> categorys = _mapper.Map<List<InsertCoursesDto>>(await _coursesRepository.GetAll());
-            foreach (InsertCoursesDto a in categorys)
+            List<InsertCoursesDto> courses = _mapper.Map<List<InsertCoursesDto>>(await _coursesRepository.GetAll());
+            foreach (InsertCoursesDto a in courses)
             {
                 if (a.Id == course.Id)
                 {
                     await _coursesRepository.Update(_mapper.Map<Courses>(course));
                     await _coursesRepository.Save();
-                    return "Update";
+                    return new ServiceResponse
+                    {
+                        Success = true,
+                        Message = "Course Was Successfully Updated",
+                        Payload = null
+                    };
                 }
             }
-            return "Such a course does not exist";
+            return new ServiceResponse
+            {
+                Success = false,
+                Message = "Something went wrong",
+                Payload = null
+            };
         }
 
-        public async Task<List<CoursesDto>> GetByCategory(int id)
+        public async Task<ServiceResponse> GetByCategory(int id)
         {
             var result = await _coursesRepository.GetListBySpec(new CoursesSpecification.ByCategory(id));
-            return _mapper.Map<List<CoursesDto>>(result);
+            var data = _mapper.Map<List<CoursesDto>>(result);
+            if (data != null)
+            {
+                return new ServiceResponse
+                {
+                    Success = true,
+                    Message = "Course Was Successfully Loaded",
+                    Payload = data
+                };
+            }
+            else
+            {
+                return new ServiceResponse
+                {
+                    Success = false,
+                    Message = "Something went wrong",
+                    Payload = null
+                };
+            }
         }
         
-        public async Task<List<CoursesDto>> GetByAuthor(int id)
+        public async Task<ServiceResponse> GetByAuthor(int id)
         {
             var result = await _coursesRepository.GetListBySpec(new CoursesSpecification.ByAuthor(id));
-            return _mapper.Map<List<CoursesDto>>(result);
+            var data = _mapper.Map<List<CoursesDto>>(result);
+            if (data != null)
+            {
+                return new ServiceResponse 
+                {
+                    Success = true,
+                    Message = "Course Was Successfully Loaded",
+                    Payload = data
+                };
+            }
+            else
+            {
+                return new ServiceResponse
+                {
+                    Success = false,
+                    Message = "Something went wrong",
+                    Payload = null
+                };
+            }
         }
-        public async Task<string> Insert(InsertCoursesDto course)
+        public async Task<ServiceResponse> Insert(InsertCoursesDto course)
         {
             List<InsertCoursesDto> courses = _mapper.Map<List<InsertCoursesDto>>(await _coursesRepository.GetAll());
             foreach (InsertCoursesDto category in courses)
             {
                 if (category.Equals(course))
                 {
-                    return "Course Is Already In Database";
+                    return new ServiceResponse
+                    {
+                        Success = false,
+                        Message = "Course Is Already In Database",
+                        Payload = null
+                    };
                 }
             }
             await _coursesRepository.Insert(_mapper.Map<Courses>(course));
             await _coursesRepository.Save();
-            return "Course successfully added!";
+            return new ServiceResponse
+            {
+                Success = true,
+                Message = "Course Was Successfully Created",
+                Payload = null
+            };
         }
 
     }

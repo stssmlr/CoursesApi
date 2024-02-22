@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CoursesApi.Core.Service
 {
@@ -20,14 +21,19 @@ namespace CoursesApi.Core.Service
             _authorRepository = authorRepository;
             _coursesRepository = coursesRepository;
         }
-        public async Task<string> Delete(int id)
+        public async Task<ServiceResponse> Delete(int id)
         {
             List<Courses> courses = (List<Courses>)await _coursesRepository.GetAll();
             foreach (Courses c in courses)
             {
                 if (c.AuthorId == id)
                 {
-                    return "Delete the course of this author";
+                    return new ServiceResponse
+                    {
+                        Success = false,
+                        Message = "Delete The Course Of This Author",
+                        Payload = null
+                    };
                 }
             }
             List<Author> Authors = (List<Author>)await _authorRepository.GetAll();
@@ -37,44 +43,117 @@ namespace CoursesApi.Core.Service
                 {
                     await _authorRepository.Delete(id);
                     await _authorRepository.Save();
-                    return "Delete";
+                    return new ServiceResponse
+                    {
+                        Success = true,
+                        Message = "Deleted",
+                        Payload = null
+                    };
                 }
             }
-            return "Author does not exist";
+            return new ServiceResponse
+            {
+                Success = false,
+                Message = "This Author Doesn't Exist",
+                Payload = null
+            };
         }
-        public async Task<Author> GetByEmail(string email)
+        public async Task<ServiceResponse> GetByEmail(string email)
         {
-            var result = await _authorRepository.GetItemBySpec(new AuthorSpecification.ByEmail(email));
-            return (result);
+            var data = await _authorRepository.GetItemBySpec(new AuthorSpecification.ByEmail(email));
+            if (data != null)
+            {
+                return new ServiceResponse
+                {
+                    Success = true,
+                    Message = "Author Was Successfully Found",
+                    Payload = data
+                };
+            }
+            else
+            {
+                return new ServiceResponse
+                {
+                    Success = false,
+                    Message = "Something went wrong",
+                    Payload = null
+                };
+            }
         }
 
-        public async Task<Author> Get(int id)
+        public async Task<ServiceResponse> Get(int id)
         {
-            return (Author)await _authorRepository.GetByID(id);
+            var data = (Author)await _authorRepository.GetByID(id);
+            if (data != null)
+            {
+                return new ServiceResponse
+                {
+                    Success = true,
+                    Message = "Author Was Successfully Loaded",
+                    Payload = data
+                };
+            }
+            else
+            {
+                return new ServiceResponse
+                {
+                    Success = false,
+                    Message = "Something went wrong",
+                    Payload = null
+                };
+            }
         }
 
 
-        public async Task<string> Insert(Author model)
+        public async Task<ServiceResponse> Insert(Author model)
         {
             List<Author> authors = (List<Author>)await _authorRepository.GetAll();
             foreach (Author category in authors)
             {
                 if (category.Equals(model))
                 {
-                    return "Course Is Already In Database";
+                    return new ServiceResponse
+                    {
+                        Success = false,
+                        Message = "Author Is Already In Database",
+                        Payload = null
+                    };
                 }
             }
             await _authorRepository.Insert(model);
             await _authorRepository.Save();
-            return "Course successfully added!";
+            return new ServiceResponse
+            {
+                Success = true,
+                Message = "AuthorWas Successfully Created",
+                Payload = null
+            };
         }
 
-        public async Task<List<Author>> GetAll()
+        public async Task<ServiceResponse> GetAll()
         {
-            return (List<Author>)await _authorRepository.GetAll();
+            var data = (List<Author>)await _authorRepository.GetAll();
+            if (data != null)
+            {
+                return new ServiceResponse
+                {
+                    Success = true,
+                    Message = "All Authors Successfully Loaded",
+                    Payload = data
+                };
+            }
+            else
+            {
+                return new ServiceResponse
+                {
+                    Success = false,
+                    Message = "Something went wrong",
+                    Payload = null
+                };
+            }
         }
 
-        public async Task<string> Update(Author course)
+        public async Task<ServiceResponse> Update(Author course)
         {
             List<Author> authors = (List<Author>)await _authorRepository.GetAll();
             foreach (Author a in authors)
@@ -83,10 +162,20 @@ namespace CoursesApi.Core.Service
                 {
                     await _authorRepository.Update(course);
                     await _authorRepository.Save();
-                    return "Update";
+                    return new ServiceResponse
+                    {
+                        Success = true,
+                        Message = "Author Updated",
+                        Payload = null
+                    };
                 }
             }
-            return "Such a author does not exist";
+            return new ServiceResponse
+                {
+                    Success = false,
+                    Message = "Something went wrong",
+                    Payload = null
+                };
         }
     }
 }
