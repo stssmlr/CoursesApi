@@ -24,12 +24,14 @@ namespace CoursesApi.Infrastructure.Context
             modelBuilder.SeedCourses();
             modelBuilder.SeedAuthors();
             modelBuilder.SeedCategory();
+            modelBuilder.SeedUsers();
 
 
         }
         public DbSet<Courses> Courses { get; set; }
         public DbSet<Courses> Author { get; set; }
         public DbSet<Courses> Category { get; set; }
+        public DbSet<Users> Users { get; set; }
 
     }
 }

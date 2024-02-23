@@ -56,5 +56,13 @@ namespace CoursesApi.Infrastructure.Initializers
                 }
             );
         }
+        public static async Task SeedUsers(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Users>().HasData(new Users[]
+                {
+                    new Users() { Id = 1, VisitTime = DateTime.Now, Browser = "Google", IPAddress = "127.10.11.24:0000", WhatRequest = "Course" },
+                }
+            );
+        }
     }
 }

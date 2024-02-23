@@ -12,35 +12,56 @@ namespace CoursesApi.Web.Controllers
     public class CoursesController : ControllerBase
     {
         private readonly ICoursesService _coursesService;
+        private readonly IUsersService _usersService;
 
-        public CoursesController(ICoursesService coursesService)
+        public CoursesController(ICoursesService coursesService, IUsersService usersService)
         {
             _coursesService = coursesService;
+            _usersService = usersService;
         }
 
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var news = await _coursesService.GetAll();
-            return Ok(news);
+            Users user = new Users()
+            {
+                IPAddress = HttpContext.Connection.RemoteIpAddress.ToString(),
+                WhatRequest = "GetAll",
+                Browser = "Course",
+                VisitTime = DateTime.Now
+            };
+            await _usersService.Insert(user);
+            var course = await _coursesService.GetAll();
+            return Ok(course);
         }
 
         [HttpPost("Get")]
         public async Task<IActionResult> GetById(int Id)
         {
-            var course = await _coursesService.Get(Id);
-            if (course == null)
+            Users user = new Users()
             {
-                return Ok("Course Is not Found");
-            }
+                IPAddress = HttpContext.Connection.RemoteIpAddress.ToString(),
+                WhatRequest = "Get",
+                Browser = HttpContext.WebSockets.ToString(),
+                VisitTime = DateTime.Now
+            };
+            await _usersService.Insert(user);
+            var course = await _coursesService.Get(Id);
             return Ok(course);
         }
         [HttpPost("Insert")]
         public async Task<IActionResult> Insert(InsertCoursesDto model)
         {
+            Users user = new Users()
+            {
+                IPAddress = HttpContext.Connection.RemoteIpAddress.ToString(),
+                WhatRequest = "Insert",
+                Browser = HttpContext.WebSockets.ToString(),
+                VisitTime = DateTime.Now
+            };
+            await _usersService.Insert(user);
             var info = await _coursesService.Insert(model);
             return Ok(info);
-
         }
         [HttpPatch("Update")]
         public async Task<IActionResult> Update(InsertCoursesDto model)
@@ -51,12 +72,28 @@ namespace CoursesApi.Web.Controllers
         [HttpDelete("Delete")]
         public async Task<IActionResult> Delete(int Id)
         {
+            Users user = new Users()
+            {
+                IPAddress = HttpContext.Connection.RemoteIpAddress.ToString(),
+                WhatRequest = "Delete",
+                Browser = HttpContext.WebSockets.ToString(),
+                VisitTime = DateTime.Now
+            };
+            await _usersService.Insert(user);
             var res = await _coursesService.Delete(Id);
             return Ok(res);
         }
         [HttpPost("GetByCategory")]
         public async Task<IActionResult> GetByCategory(int id) 
         {
+            Users user = new Users()
+            {
+                IPAddress = HttpContext.Connection.RemoteIpAddress.ToString(),
+                WhatRequest = "GetByCategory",
+                Browser = HttpContext.WebSockets.ToString(),
+                VisitTime = DateTime.Now
+            };
+            await _usersService.Insert(user);
             var getc = await _coursesService.GetByCategory(id);
             if (getc == null)
             {
@@ -67,6 +104,14 @@ namespace CoursesApi.Web.Controllers
         [HttpPost("GetByAuthor")]
         public async Task<IActionResult> GetByAuthor(int id)
         {
+            Users user = new Users()
+            {
+                IPAddress = HttpContext.Connection.RemoteIpAddress.ToString(),
+                WhatRequest = "GetByAuthor",
+                Browser = HttpContext.WebSockets.ToString(),
+                VisitTime = DateTime.Now
+            };
+            await _usersService.Insert(user);
             var geta = await _coursesService.GetByAuthor(id);
             if (geta == null)
             {
